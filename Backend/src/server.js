@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes.js";
 import categoriasRoutes from "./routes/categoriasRoutes.js"; 
 import proveedoresRoutes from "./routes/proveedoresRoutes.js";
 import productosRoutes from "./routes/productosRoute.js";
+import ventasRoutes from "./routes/ventasRoute.js";
 
 
 dotenv.config();
@@ -24,6 +25,9 @@ app.use("/proveedores", proveedoresRoutes);
 
 // Rutas de productos
 app.use("/productos", productosRoutes);
+
+// Rutas de ventas
+app.use("/ventas", ventasRoutes);
 
 // Configuración del puerto
 const PORT = process.env.PORT || 5000;

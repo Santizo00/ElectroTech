@@ -231,3 +231,93 @@ export const deleteVenta = async (req, res) => {
     res.status(400).json({ message: error.message || "Error al eliminar venta" });
   }
 };
+
+// Obtener resumen de ventas (por periodo)
+export const getResumenVentas = async (req, res) => {
+  const { fechaInicio, fechaFin } = req.query;
+  
+  try {
+    const pool = await poolPromise;
+    const request = pool.request();
+    
+    // Agregar parámetros si se proporcionan fechas
+    if (fechaInicio) {
+      request.input("fechaInicio", new Date(fechaInicio));
+    }
+    
+    if (fechaFin) {
+      request.input("fechaFin", new Date(fechaFin));
+    }
+    
+    // Construir la consulta según los parámetros
+    let query = `
+      SELECT 
+        COUNT(idVenta) as totalVentas,
+        SUM(total) as montoTotal,
+        AVG(total) as promedioVenta,
+        MIN(total) as ventaMinima,
+        MAX(total) as ventaMaxima
+      FROM Ventas
+      WHERE 1=1
+    `;
+    
+    if (fechaInicio) {
+      query += " AND fechaVenta >= @fechaInicio";
+    }
+    
+    if (fechaFin) {
+      query += " AND fechaVenta <= @fechaFin";
+    }
+    
+    const resultado = await request.query(query);
+    
+    // Obtener productos más vendidos
+    const productosQuery = `
+      SELECT TOP 5
+        p.idProducto,
+        p.descripcionProducto,
+        SUM(d.cantidad) as cantidadVendida,
+        SUM(d.subtotal) as montoTotal
+      FROM DetallesVentas d
+      INNER JOIN Productos p ON d.idProducto = p.idProducto
+      INNER JOIN Ventas v ON d.idVenta = v.idVenta
+      ${fechaInicio ? "WHERE v.fechaVenta >= @fechaInicio" : ""}
+      ${fechaFin ? (fechaInicio ? "AND v.fechaVenta <= @fechaFin" : "WHERE v.fechaVenta <= @fechaFin") : ""}
+      GROUP BY p.idProducto, p.descripcionProducto
+      ORDER BY cantidadVendida DESC
+    `;
+    
+    const productosResult = await pool.request()
+      .input("fechaInicio", fechaInicio ? new Date(fechaInicio) : undefined)
+      .input("fechaFin", fechaFin ? new Date(fechaFin) : undefined)
+      .query(productosQuery);
+    
+    // Ventas por día (para gráficos)
+    const ventasPorDiaQuery = `
+      SELECT 
+        CONVERT(date, fechaVenta) as fecha,
+        COUNT(idVenta) as cantidadVentas,
+        SUM(total) as montoTotal
+      FROM Ventas
+      ${fechaInicio ? "WHERE fechaVenta >= @fechaInicio" : ""}
+      ${fechaFin ? (fechaInicio ? "AND fechaVenta <= @fechaFin" : "WHERE fechaVenta <= @fechaFin") : ""}
+      GROUP BY CONVERT(date, fechaVenta)
+      ORDER BY fecha
+    `;
+    
+    const ventasPorDiaResult = await pool.request()
+      .input("fechaInicio", fechaInicio ? new Date(fechaInicio) : undefined)
+      .input("fechaFin", fechaFin ? new Date(fechaFin) : undefined)
+      .query(ventasPorDiaQuery);
+    
+    res.json({
+      resumen: resultado.recordset[0],
+      productosMasVendidos: productosResult.recordset,
+      ventasPorDia: ventasPorDiaResult.recordset
+    });
+    
+  } catch (error) {
+    console.error("Error al obtener resumen de ventas:", error);
+    res.status(500).json({ message: "Error al obtener resumen de ventas" });
+  }
+};

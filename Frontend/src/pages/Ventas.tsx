@@ -44,7 +44,6 @@ const Ventas = () => {
   const [ventaActual, setVentaActual] = useState<DetalleVenta[]>([]);
   const [productos, setProductos] = useState<Producto[]>([]);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState<number | string>("");
   const [busquedaProducto, setBusquedaProducto] = useState("");
   const [busquedaVenta, setBusquedaVenta] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +55,9 @@ const Ventas = () => {
   // Estado para la selección de producto actual
   const [productoSeleccionado, setProductoSeleccionado] = useState<number | string>("");
   const [cantidadSeleccionada, setCantidadSeleccionada] = useState<number>(1);
+
+  // Obtener el usuario actual del localStorage
+  const usuarioActual = JSON.parse(localStorage.getItem('user') || '{}');
 
   // Cargar datos iniciales
   useEffect(() => {
@@ -265,8 +267,8 @@ const Ventas = () => {
 
   // Función para guardar la venta
   const guardarVenta = async () => {
-    if (!usuarioSeleccionado) {
-      showWarning("Selección requerida", "Seleccione un usuario para la venta");
+    if (!usuarioActual || !usuarioActual.id) {
+      showWarning("Error de autenticación", "No se ha detectado un usuario logueado");
       return;
     }
     
@@ -280,7 +282,7 @@ const Ventas = () => {
       
       // Crear objeto de venta
       const venta = {
-        idUsuario: Number(usuarioSeleccionado),
+        idUsuario: usuarioActual.id,
         total: totalVenta,
         detalles: ventaActual.map(detalle => ({
           idProducto: detalle.idProducto,
@@ -309,7 +311,6 @@ const Ventas = () => {
       
       // Resetear formulario
       setVentaActual([]);
-      setUsuarioSeleccionado("");
       setTotalVenta(0);
       
     } catch (error) {
@@ -355,8 +356,13 @@ const Ventas = () => {
   };
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-lg border border-black">
+    <div className="p-6 bg-white shadow-md rounded-lg border border-black relative">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Gestión de Ventas</h2>
+      
+      {/* Indicador de usuario actual */}
+      <div className="absolute top-4 right-6 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+        Usuario: {usuarioActual?.nombre || "..."}
+      </div>
       
       {/* Selector de vistas */}
       <div className="flex mb-6 bg-gray-200 p-1 rounded-lg w-fit">
@@ -374,29 +380,11 @@ const Ventas = () => {
           <List className="inline-block w-5 h-5 mr-1" />
           Historial
         </button>
-        
       </div>
       
       {/* Vista de nueva venta */}
       {vistaActual === "nueva" && (
         <div>
-          {/* Selección de usuario */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Usuario:</label>
-            <select
-              className="border p-2 rounded w-full md:w-64 text-black bg-white border border-black"
-              value={usuarioSeleccionado}
-              onChange={(e) => setUsuarioSeleccionado(e.target.value)}
-              disabled={isLoading}
-            >
-              <option value="">Seleccione un usuario</option>
-              {usuarios.map((usuario) => (
-                <option key={usuario.idUsuario} value={usuario.idUsuario}>
-                  {usuario.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
           
           {/* Agregador de productos */}
           <div className="mb-6 bg-gray-100 p-4 rounded-lg">

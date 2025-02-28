@@ -1,0 +1,109 @@
+-- Creacion de las base de datos
+CREATE DATABASE ElectroTech
+
+-- Usamos la base de datos creada
+use ElectroTech
+
+-- Tabla de Roles
+CREATE TABLE Roles (
+    idRol INT PRIMARY KEY IDENTITY(1,1),
+    nombreRol VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- Insecion de roles
+INSERT INTO Roles (nombreRol) VALUES ('Administrador'), ('Vendedor');
+
+-- Tabla de Usuarios
+CREATE TABLE Usuarios (
+    idUsuario INT PRIMARY KEY IDENTITY(1,1),
+    nombre VARCHAR(100) NOT NULL,
+    usuario VARCHAR(100) NOT NULL UNIQUE,
+    contrasena VARCHAR(255) NOT NULL,
+    idRol INT NOT NULL,
+    estado BIT DEFAULT 1,
+    FOREIGN KEY (idRol) REFERENCES Roles(idRol)
+);
+
+-- Tabla de Categorías
+CREATE TABLE Categorias (
+    idCategoria INT PRIMARY KEY IDENTITY(1,1),
+    nombreCategoria VARCHAR(100) NOT NULL UNIQUE,
+    estado BIT DEFAULT 1  -- 1 = Activo, 0 = Inactivo
+);
+
+-- Tabla de Proveedores
+CREATE TABLE Proveedores (
+    idProveedor INT PRIMARY KEY IDENTITY(1,1),
+    nombreProveedor VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20) NULL,
+    correo VARCHAR(100) NULL UNIQUE,
+    direccion TEXT NULL,
+    estado BIT DEFAULT 1
+);
+
+-- Tabla de Productos
+CREATE TABLE Productos (
+    idProducto INT PRIMARY KEY IDENTITY(1,1),
+    descripcionProducto VARCHAR(100) NOT NULL,
+    precio DECIMAL(10,2) NOT NULL,
+    stock INT NOT NULL DEFAULT 0,
+    idCategoria INT NOT NULL,
+    idProveedor INT NOT NULL,
+    estado BIT DEFAULT 1,  -- 1 = Disponible, 0 = No disponible
+    FOREIGN KEY (idCategoria) REFERENCES Categorias(idCategoria),
+    FOREIGN KEY (idProveedor) REFERENCES Proveedores(idProveedor)
+);
+
+-- Tabla de Ventas
+CREATE TABLE Ventas (
+    idVenta INT PRIMARY KEY IDENTITY(1,1),
+    idUsuario INT NOT NULL,
+    fechaVenta DATETIME DEFAULT GETDATE(),
+    total DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario)
+);
+
+-- Tabla de Detalles de Ventas
+CREATE TABLE DetallesVentas (
+    idDetalle INT PRIMARY KEY IDENTITY(1,1),
+    idVenta INT NOT NULL,
+    idProducto INT NOT NULL,
+    cantidad INT NOT NULL CHECK (cantidad > 0),
+    precioUnitario DECIMAL(10,2) NOT NULL,
+    subtotal AS (cantidad * precioUnitario) PERSISTED,
+    FOREIGN KEY (idVenta) REFERENCES Ventas(idVenta),
+    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto)
+);
+
+-- Clave foránea en Usuarios para Roles
+ALTER TABLE Usuarios
+ADD CONSTRAINT FK_Usuarios_Roles
+FOREIGN KEY (idRol) REFERENCES Roles(idRol);
+
+-- Clave foránea en Productos para Categorias
+ALTER TABLE Productos
+ADD CONSTRAINT FK_Productos_Categorias
+FOREIGN KEY (idCategoria) REFERENCES Categorias(idCategoria);
+
+-- Clave foránea en Productos para Proveedores
+ALTER TABLE Productos
+ADD CONSTRAINT FK_Productos_Proveedores
+FOREIGN KEY (idProveedor) REFERENCES Proveedores(idProveedor);
+
+-- Clave foránea en Ventas para Usuarios
+ALTER TABLE Ventas
+ADD CONSTRAINT FK_Ventas_Usuarios
+FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario);
+
+-- Clave foránea en DetallesVentas para Ventas
+ALTER TABLE DetallesVentas
+ADD CONSTRAINT FK_DetallesVentas_Ventas
+FOREIGN KEY (idVenta) REFERENCES Ventas(idVenta);
+
+-- Clave foránea en DetallesVentas para Productos
+ALTER TABLE DetallesVentas
+ADD CONSTRAINT FK_DetallesVentas_Productos
+FOREIGN KEY (idProducto) REFERENCES Productos(idProducto);
+
+
+

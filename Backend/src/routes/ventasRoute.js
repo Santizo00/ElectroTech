@@ -4,10 +4,14 @@ import {
   getVentaById, 
   getDetallesVenta,
   createVenta, 
-  deleteVenta
+  deleteVenta,
+  getResumenVentas
 } from "../controllers/ventasController.js";
 
 const router = express.Router();
+
+// Obtener resumen de ventas (para dashboard)
+router.get("/resumen", getResumenVentas);
 
 // Obtener todas las ventas
 router.get("/", getVentas);
