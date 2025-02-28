@@ -43,7 +43,7 @@ const Ventas = () => {
   const [historialVentas, setHistorialVentas] = useState<Venta[]>([]);
   const [ventaActual, setVentaActual] = useState<DetalleVenta[]>([]);
   const [productos, setProductos] = useState<Producto[]>([]);
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [usuarios, ] = useState<Usuario[]>([]);
   const [busquedaProducto, setBusquedaProducto] = useState("");
   const [busquedaVenta, setBusquedaVenta] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -62,7 +62,6 @@ const Ventas = () => {
   // Cargar datos iniciales
   useEffect(() => {
     fetchProductos();
-    fetchUsuarios();
     fetchVentas();
   }, []);
 
@@ -87,26 +86,6 @@ const Ventas = () => {
     } catch (error) {
       console.error("Error al obtener productos:", error);
       showWarning("Error", "No se pudieron cargar los productos");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Función para obtener usuarios
-  const fetchUsuarios = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`${API_URL}/usuarios`);
-      
-      if (!response.ok) {
-        throw new Error('Error al obtener usuarios');
-      }
-      
-      const data = await response.json();
-      setUsuarios(data);
-    } catch (error) {
-      console.error("Error al obtener usuarios:", error);
-      showWarning("Error", "No se pudieron cargar los usuarios");
     } finally {
       setIsLoading(false);
     }
