@@ -1,0 +1,47 @@
+{
+  "name": "estructura_node_react_tailwind",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:electron": "concurrently \"npm run start:backend\" \"npm run start:frontend\" \"npm run electron\"",
+    "build": "electron-builder",
+    "start:backend": "cd Backend && npm run dev",
+    "start:frontend": "cd Frontend && npm run dev",
+    "electron": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Configuracion basica de Node.js, React, Tailwind y Electron",
+  "dependencies": {
+    "estructura_node_react_tailwind": "file:"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "electron": "^25.2.0",
+    "electron-builder": "^24.5.1"
+  },
+  "build": {
+    "appId": "com.electrotech.app",
+    "productName": "ElectroTech",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "Backend/**",
+      "Frontend/build/**",
+      "main.js",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "icon.icns"
+    }
+  }
+}
