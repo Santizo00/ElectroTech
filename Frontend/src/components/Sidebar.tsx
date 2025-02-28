@@ -7,7 +7,7 @@ interface UserData {
   id?: number;
   nombre?: string;
   role?: number;
-  [key: string]: any; // Para cualquier otra propiedad que pueda tener
+  [key: string]: any;
 }
 
 export default function Sidebar() {
@@ -54,6 +54,9 @@ export default function Sidebar() {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     
+    // Disparar evento para actualizar componentes
+    window.dispatchEvent(new Event("storage"));
+    
     // Navegar al login
     navigate("/login", { replace: true });
   };
@@ -80,14 +83,14 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* Opciones Comunes */}
+      {/* Opciones Comunes para todos los usuarios */}
       <nav className="flex-1">
         <Link
-          to="/menu"
+          to="/"
           className={`flex items-center ${isOpen ? "space-x-3" : "justify-center"} p-4 hover:bg-blue-600/20 transition-all duration-200`}
         >
           <Home className="w-6 h-6 text-white" />
-          {isOpen && <span className="text-sm font-medium text-white">Menu</span>}
+          {isOpen && <span className="text-sm font-medium text-white">Inicio</span>}
         </Link>
 
       {/* Opciones SOLO para Administradores */}
@@ -116,29 +119,17 @@ export default function Sidebar() {
             <Truck className="w-6 h-6 text-white" />
             {isOpen && <span className="text-sm font-medium text-white">Proveedores</span>}
             </Link>
-            
-            <Link
-            to="/ventas"
-            className={`flex items-center ${isOpen ? "space-x-3" : "justify-center"} p-4 hover:bg-blue-600/20 transition-all duration-200`}
-            >
-            <ShoppingCart className="w-6 h-6 text-white" />
-            {isOpen && <span className="text-sm font-medium text-white">Ventas</span>}
-            </Link>
           </>
         )}
 
-      {/* Opciones SOLO para Vendedores */}
-        {user.role === 2 && (
-        <>
-            <Link
-            to="/ventas"
-            className={`flex items-center ${isOpen ? "space-x-3" : "justify-center"} p-4 hover:bg-blue-600/20 transition-all duration-200`}
-            >
-            <ShoppingCart className="w-6 h-6 text-white" />
-            {isOpen && <span className="text-sm font-medium text-white">Ventas</span>}
-            </Link>
-        </>
-        )}
+      {/* Opción de Ventas (disponible para ambos roles) */}
+      <Link
+        to="/ventas"
+        className={`flex items-center ${isOpen ? "space-x-3" : "justify-center"} p-4 hover:bg-blue-600/20 transition-all duration-200`}
+      >
+        <ShoppingCart className="w-6 h-6 text-white" />
+        {isOpen && <span className="text-sm font-medium text-white">Ventas</span>}
+      </Link>
       </nav>
 
       {/* Sección del Usuario y Logout */}

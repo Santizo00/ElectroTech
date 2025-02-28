@@ -1,20 +1,20 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Layout from "./components/Layout";
+import Home from "./pages/Menu";
 import Productos from "./pages/Productos";
 import Categorias from "./pages/Categorias";
 import Proveedores from "./pages/Proveedores";
 import Ventas from "./pages/Ventas";
-import Menu from "./pages/Menu";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { useEffect, useState } from "react";
-import ProtectedRoute from "./components/ProtectedRoute"; // Asumiendo que lo extraerás a su propio archivo
 
 // Definir interfaz para el tipo de usuario
 interface UserData {
   id?: number;
   nombre?: string;
   role?: number;
-  [key: string]: any; // Para cualquier otra propiedad que pueda tener
+  [key: string]: any;
 }
 
 // Función para obtener datos del usuario con tipo correcto
@@ -39,7 +39,7 @@ function App() {
     
     window.addEventListener("storage", handleStorageChange);
     
-    // También verificamos periódicamente (para cambios en la misma ventana)
+    // También verificamos periódicamente para cambios en la misma ventana
     const interval = setInterval(handleStorageChange, 1000);
     
     return () => {
@@ -52,32 +52,24 @@ function App() {
     <Router>
       <Routes>
         {/* Ruta de Login */}
-        <Route path="/login" element={<Login />} />
+        <Route 
+          path="/login" 
+          element={user ? <Navigate to="/" replace /> : <Login />} 
+        />
 
         {/* Rutas protegidas dentro del Layout */}
-        <Route path="/" element={
-          <ProtectedRoute allowedRoles={[1, 2]}>
-            <Layout />
-          </ProtectedRoute>
-          
-        }>
-          {/* Redirección según el rol del usuario */}
-          <Route index element={
-            user?.role === 1 
-              ? <Navigate to="/menu" replace /> 
-              : <Navigate to="/menu" replace />
-          } />
+        <Route 
+          path="/" 
+          element={
+            <ProtectedRoute allowedRoles={[1, 2]}>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          {/* Página Home como ruta principal para ambos tipos de usuarios */}
+          <Route index element={<Home />} />
           
           {/* Rutas para Administrador */}
-          <Route 
-            path="menu" 
-            element={
-              <ProtectedRoute allowedRoles={[1]}>
-                <Menu />
-              </ProtectedRoute>
-            } 
-          />
-
           <Route 
             path="productos" 
             element={
@@ -106,15 +98,6 @@ function App() {
           />
           
           {/* Rutas para Administrador y Vendedor */}
-          <Route 
-            path="menu" 
-            element={
-              <ProtectedRoute allowedRoles={[1]}>
-                <Menu />
-              </ProtectedRoute>
-            } 
-          />
-
           <Route 
             path="ventas" 
             element={

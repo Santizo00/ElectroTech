@@ -367,7 +367,7 @@ const Ventas = () => {
           
           {/* Agregador de productos */}
           <div className="mb-6 bg-gray-100 p-4 rounded-lg">
-            <h3 className="font-semibold mb-2">Agregar producto</h3>
+            <h3 className="font-semibold mb-2 text-black">Agregar producto</h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="md:col-span-2">
                 <label className="block text-gray-700 mb-1">Producto:</label>

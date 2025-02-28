@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
+    "setup": "cd backend && npm install && cd ../frontend && npm install && cd .. && npm install",
+    "start": "npm run setup && concurrently \"npm run start:backend\" \"npm run start:frontend\" ",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "start:electron": "concurrently \"npm run start:backend\" \"npm run start:frontend\" \"npm run electron\"",
     "build": "electron-builder",
     "start:backend": "cd Backend && npm run dev",
