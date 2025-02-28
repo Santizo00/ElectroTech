@@ -1,0 +1,25 @@
+En la carpeta Backend 
+el .env cambiar los datos para la conexion a la base de datos 
+
+DB_PORT_SQLServer=1433
+DB_HOST_SQLServer=localhost
+DB_USER_SQLServer=sa
+DB_PASS_SQLServer=123456
+DB_NAME_SQLServer=ElectroTech
+
+
+Seguido a eso correr el comando " npm start " en la terminal 
+
+Luego acceder a http://localhost:3000/
+
+Usuario administrador  
+Usuario: admin
+Contraseña: 1234
+
+Usuario Vendedor
+Usuario: vendedor
+Contraseña: 1234
+
+
+Actualmente los usuarios se crean de forma manual en el siguiente archivo 
+Backend/src/utils/createUsers.js
