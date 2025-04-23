@@ -1,7 +1,41 @@
-ElectroTech es un sistema web diseñado para optimizar la gestión de inventario y ventas en una tienda de productos electrónicos. Este sistema reemplaza el método manual basado en hojas de cálculo, ofreciendo una solución centralizada que:
+#ElectroTech
 
-Gestiona Productos: Permite registrar, editar y eliminar productos de forma lógica, manteniendo la integridad de las ventas registradas.
-Controla el Inventario: Actualiza automáticamente el stock tras cada venta, evitando discrepancias y alertando sobre productos agotados.
-Administra Categorías y Proveedores: Facilita la organización de productos mediante categorías y permite gestionar proveedores para una reposición de inventario más eficiente.
-Registra Ventas: Guarda un historial digital de las transacciones realizadas, proporcionando datos para análisis de rendimiento y pronósticos de demanda.
-Control de Acceso: Implementa un sistema de autenticación con roles (administrador y vendedor) que restringe el acceso a funciones críticas según el perfil del usuario.
+**Sistema web para la gestión eficiente de inventario y ventas en tiendas de productos electrónicos.**
+
+ElectroTech reemplaza los procesos manuales con una solución digital moderna que centraliza el control de productos, ventas, proveedores y usuarios. Desarrollado con tecnologías actuales, busca optimizar las operaciones internas y facilitar la toma de decisiones basadas en datos reales.
+
+##Tecnologías utilizadas
+
+- **Frontend:** React + Vite + Tailwind CSS
+- **Backend:** Node.js + Express
+- **Base de datos:** SQL Server
+- **Control de acceso:** Autenticación con roles (Administrador y Vendedor)
+
+##Funcionalidades principales
+
+- **Gestión de productos**  
+  Alta, edición y eliminación lógica de productos sin comprometer el historial de ventas.
+
+- **Control de inventario**  
+  Actualización automática del stock tras cada venta, alertas por productos agotados o bajos.
+
+- **Administración de categorías y proveedores**  
+  Organización eficiente de productos y relación directa con proveedores para facilitar la reposición.
+
+- **Registro de ventas**  
+  Historial digital de transacciones con datos útiles para análisis y proyecciones.
+
+- **Sistema de autenticación y roles**  
+  Acceso controlado según el perfil del usuario, protegiendo las funciones críticas del sistema.
+
+##Objetivo
+
+Optimizar la operación de tiendas de electrónica mediante una herramienta intuitiva, robusta y adaptable, que brinde visibilidad en tiempo real del negocio.
+
+## 🧠 Autor
+
+Axel Omar Santizo – [LinkedIn](https://www.linkedin.com/in/axelsantizo/)  
+Desarrollador Full Stack con enfoque en soluciones empresariales, automatización y gestión de datos.
+
+---
+
